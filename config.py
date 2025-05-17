@@ -1,7 +1,10 @@
-#config.py
+# config.py
 
-#Basic URL piblic Petstore API
-BASE_URL = "https://petstore.swagger.io/v2"
+# Базовый URL локального Petstore API
+BASE_URL = "http://localhost:8080/api/v3"
 
-#Standard status for filtration
-DEFAULT_STATUS = "available"
+# Заголовки для всех запросов
+HEADERS = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+}

@@ -10,8 +10,29 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # Поднимаем контейнер Petstore как сервис
+    services:
+      petstore:
+        image: swaggerapi/petstore3:latest
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/api/v3/openapi.json || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Wait for Petstore to be healthy
+        run: |
+          for i in {1..5}; do
+            curl -f http://localhost:8080/api/v3/openapi.json && break
+            echo "Waiting for Petstore..."
+            sleep 5
+          done
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -25,4 +46,3 @@ jobs:
 
       - name: Run tests
         run: pytest -q
-
